@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: gofr-demo-postgres
+    environment:
+      POSTGRES_DB: gofr_demo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d gofr_demo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

@@ -1,0 +1,55 @@
+version: '3'
+
+tasks:
+
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list-all
+
+  up:
+    desc: Start PostgreSQL 18 locally
+    cmds:
+      - docker compose up -d
+
+  down:
+    desc: Stop local services
+    cmds:
+      - docker compose down
+
+  run:
+    desc: Run the GoFr app
+    cmds:
+      - go run .
+
+  docs:
+    desc: Generate OpenAPI 3.1 docs with Swaggo and sync static/openapi.json for GoFr
+    cmds:
+      - go run ./tools/generate-docs
+
+  test:
+    desc: Run the Go test suite in short mode
+    cmds:
+      - go test -short ./...
+
+  format:
+    desc: Format all Go code
+    cmds:
+      - go fix ./...
+      - go fmt ./...
+
+  lint:
+    desc: Run golangci-lint in a Docker container
+    cmds:
+      - docker run --rm -v {{toSlash .ROOT_DIR}}:/app -w /app golangci/golangci-lint:v2.12.2 golangci-lint run -v --timeout 5m
+
+  client:
+    desc: Run the API client demo (calls every endpoint)
+    cmds:
+      - go run ./cmd/client-demo
+
+  dev:
+    desc: Start Postgres and run the app
+    cmds:
+      - task: up
+      - task: run
