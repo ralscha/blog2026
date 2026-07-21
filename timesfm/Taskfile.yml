@@ -1,0 +1,46 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  sync:
+    desc: Install project dependencies with uv
+    cmds:
+      - uv sync
+
+  demo:synthetic:
+    desc: Run the synthetic event-shock demo
+    cmds:
+      - uv run python taylor-swift/demo.py
+
+  demo:synthetic-xreg:
+    desc: Run the synthetic event-shock demo with an XReg covariate
+    cmds:
+      - uv run python taylor-swift-xreg/demo.py
+
+  demo:walmart:
+    desc: Run the Walmart weekly sales demo
+    cmds:
+      - uv run python walmart-sales/demo.py
+
+  demo:market:
+    desc: Run the NVIDIA market demo
+    cmds:
+      - uv run python market-vibe/demo.py
+
+  demo:energy:
+    desc: Run the German electricity load demo
+    cmds:
+      - uv run python energy-pulse/demo.py
+
+  demos:
+    desc: Run all demo scripts
+    cmds:
+      - task demo:synthetic
+      - task demo:synthetic-xreg
+      - task demo:walmart
+      - task demo:market
+      - task demo:energy
