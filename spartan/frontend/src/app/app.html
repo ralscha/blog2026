@@ -1,0 +1,288 @@
+<main class="min-h-screen bg-background">
+  <header class="border-border bg-card border-b">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
+      <div class="flex items-center gap-3">
+        <div
+          class="bg-primary text-primary-foreground flex size-9 items-center justify-center rounded-lg"
+        >
+          <svg lucideLayoutDashboard></svg>
+        </div>
+        <div>
+          <p class="text-sm font-semibold">Orbit</p>
+          <p class="text-muted-foreground text-xs">Operations workspace</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button
+          hlmBtn
+          variant="ghost"
+          size="icon"
+          hlmTooltip="Notifications"
+          aria-label="Notifications"
+        >
+          <svg lucideBell></svg>
+        </button>
+        <button hlmBtn variant="outline" size="sm" (click)="toggleTheme()">
+          @if (darkMode()) {
+            <svg lucideSun></svg>
+          } @else {
+            <svg lucideMoon></svg>
+          }
+          {{ darkMode() ? 'Light' : 'Dark' }}
+        </button>
+        <hlm-avatar>
+          <span hlmAvatarFallback>SR</span>
+        </hlm-avatar>
+      </div>
+    </div>
+  </header>
+
+  <div class="mx-auto grid max-w-7xl gap-8 px-6 py-8 lg:grid-cols-[13rem_1fr]">
+    <aside class="hidden lg:block">
+      <nav aria-label="Main navigation" class="flex flex-col gap-1">
+        <a
+          class="bg-accent text-accent-foreground flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium"
+          href="#overview"
+        >
+          <svg lucideLayoutDashboard></svg> Overview
+        </a>
+        <a
+          class="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-md px-3 py-2 text-sm"
+          href="#projects"
+        >
+          <svg lucideActivity></svg> Projects
+        </a>
+        <a
+          class="text-muted-foreground hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-md px-3 py-2 text-sm"
+          href="#preferences"
+        >
+          <svg lucideSettings2></svg> Preferences
+        </a>
+      </nav>
+    </aside>
+
+    <div class="min-w-0">
+      <section id="overview" class="flex flex-col gap-5">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="text-muted-foreground text-sm">Friday, July 10</p>
+            <h1 class="mt-1 text-3xl font-semibold tracking-tight">Good morning, Sam</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              hlmBtn
+              variant="outline"
+              size="sm"
+              (click)="refresh()"
+              [disabled]="api.loading()"
+            >
+              @if (api.loading()) {
+                <hlm-spinner />
+              } @else {
+                <svg lucideRefreshCw></svg>
+              }
+              Refresh
+            </button>
+            <hlm-dialog #createProjectDialog="hlmDialog">
+              <button hlmDialogTrigger hlmBtn size="sm"><svg lucidePlus></svg> New project</button>
+              <hlm-dialog-content *hlmDialogPortal class="sm:max-w-md">
+                <hlm-dialog-header>
+                  <h2 hlmDialogTitle>Create a project</h2>
+                  <p hlmDialogDescription>Start a new initiative in your workspace.</p>
+                </hlm-dialog-header>
+                <form
+                  [formRoot]="projectForm"
+                  (submit)="createProject($event, createProjectDialog)"
+                  class="py-2"
+                >
+                  <div hlmField>
+                    <label hlmFieldLabel for="project-name">Project name</label>
+                    <input
+                      hlmInput
+                      id="project-name"
+                      [formField]="projectForm.name"
+                      placeholder="e.g. Growth experiments"
+                    />
+                    <p hlmFieldDescription>A clear name helps your team find it.</p>
+                    @for (error of projectForm.name().errors(); track error) {
+                      <hlm-field-error [validator]="error.kind">{{
+                        error.message
+                      }}</hlm-field-error>
+                    }
+                  </div>
+                  <div class="mt-5 flex justify-end gap-2">
+                    <button hlmBtn variant="outline" type="button" hlmDialogClose>Cancel</button>
+                    <button hlmBtn type="submit">Create project</button>
+                  </div>
+                </form>
+              </hlm-dialog-content>
+            </hlm-dialog>
+          </div>
+        </div>
+
+        @if (api.error(); as error) {
+          <div hlmAlert variant="destructive">
+            <svg lucideCircleAlert></svg>
+            <h3 hlmAlertTitle>Backend unavailable</h3>
+            <p hlmAlertDescription>{{ error }}</p>
+          </div>
+        }
+
+        @if (api.dashboard(); as dashboard) {
+          <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            @for (metric of dashboard.metrics; track metric.label) {
+              <section hlmCard>
+                <div hlmCardHeader class="pb-2">
+                  <p hlmCardDescription>{{ metric.label }}</p>
+                  <h2 hlmCardTitle class="text-2xl">{{ metric.value }}</h2>
+                </div>
+                <div hlmCardContent class="flex items-center gap-1 text-sm">
+                  @if (metric.trend === 'up') {
+                    <svg lucideArrowUpRight class="text-muted-foreground"></svg>
+                  } @else {
+                    <svg lucideArrowDownRight class="text-muted-foreground"></svg>
+                  }
+                  <span class="font-medium">{{ metric.change }}</span>
+                  <span class="text-muted-foreground">from last month</span>
+                </div>
+              </section>
+            }
+          </div>
+
+          <section hlmCard id="projects">
+            <div hlmCardHeader class="flex-row items-start justify-between gap-4">
+              <div>
+                <h2 hlmCardTitle>Projects</h2>
+                <p hlmCardDescription>Live delivery status from the Go API.</p>
+              </div>
+              <span hlmBadge variant="secondary">{{ dashboard.projects.length }} active</span>
+            </div>
+            <div hlmCardContent>
+              <div hlmTableContainer>
+                <table hlmTable>
+                  <caption class="sr-only">
+                    Active project delivery status
+                  </caption>
+                  <thead hlmTHead>
+                    <tr hlmTr>
+                      <th hlmTh>Project</th>
+                      <th hlmTh>Owner</th>
+                      <th hlmTh>Status</th>
+                      <th hlmTh class="min-w-36">Progress</th>
+                    </tr>
+                  </thead>
+                  <tbody hlmTBody>
+                    @for (project of dashboard.projects; track project.id) {
+                      <tr hlmTr>
+                        <td hlmTd class="font-medium">{{ project.name }}</td>
+                        <td hlmTd>{{ project.owner }}</td>
+                        <td hlmTd>
+                          <span
+                            hlmBadge
+                            [variant]="project.status === 'At risk' ? 'destructive' : 'secondary'"
+                            >{{ project.status }}</span
+                          >
+                        </td>
+                        <td hlmTd>
+                          <div class="flex items-center gap-3">
+                            <div hlmProgress [value]="project.completion">
+                              <div hlmProgressIndicator></div>
+                            </div>
+                            <span class="text-muted-foreground text-xs"
+                              >{{ project.completion }}%</span
+                            >
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <div class="grid gap-4 xl:grid-cols-[1.2fr_.8fr]">
+            <section hlmCard>
+              <div hlmCardHeader>
+                <h2 hlmCardTitle>Workspace intelligence</h2>
+                <p hlmCardDescription>Explore the dashboard’s component patterns.</p>
+              </div>
+              <div hlmCardContent>
+                <hlm-tabs tab="activity">
+                  <hlm-tabs-list
+                    ><button hlmTabsTrigger="activity">Activity</button
+                    ><button hlmTabsTrigger="delivery">Delivery</button></hlm-tabs-list
+                  >
+                  <div hlmTabsContent="activity" class="pt-4">
+                    <div class="flex flex-col gap-4">
+                      @for (item of dashboard.activity; track item.id) {
+                        <div class="flex items-center gap-3">
+                          <hlm-avatar
+                            ><span hlmAvatarFallback>{{ item.initials }}</span></hlm-avatar
+                          >
+                          <p class="min-w-0 flex-1 text-sm">
+                            <span class="font-medium">{{ item.person }}</span> {{ item.action }}
+                          </p>
+                          <span class="text-muted-foreground text-xs">{{ item.when }}</span>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <div hlmTabsContent="delivery" class="pt-4">
+                    <p class="text-muted-foreground text-sm">
+                      {{ onTrackProjects() }} of {{ dashboard.projects.length }} projects are on
+                      track.
+                    </p>
+                  </div>
+                </hlm-tabs>
+              </div>
+            </section>
+
+            <section hlmCard id="preferences">
+              <div hlmCardHeader>
+                <h2 hlmCardTitle>Daily focus</h2>
+                <p hlmCardDescription>Keep your team in sync.</p>
+              </div>
+              <div hlmCardContent class="flex flex-col gap-5">
+                <div class="flex items-center justify-between gap-4">
+                  <div>
+                    <p class="text-sm font-medium">Daily digest</p>
+                    <p class="text-muted-foreground text-sm">
+                      Receive a project summary each morning.
+                    </p>
+                  </div>
+                  <hlm-switch
+                    [checked]="dailyDigest()"
+                    (checkedChange)="updateDigest($event)"
+                    aria-label="Enable daily digest"
+                  />
+                </div>
+                <div hlmSeparator></div>
+                <div>
+                  <p class="mb-3 text-sm font-medium">View density</p>
+                  <hlm-toggle-group
+                    type="single"
+                    [value]="density()"
+                    (valueChange)="setDensity($event)"
+                  >
+                    <button hlmToggleGroupItem value="comfortable">Comfortable</button
+                    ><button hlmToggleGroupItem value="compact">Compact</button>
+                  </hlm-toggle-group>
+                </div>
+              </div>
+            </section>
+          </div>
+        } @else {
+          <section hlmCard>
+            <div hlmCardContent class="flex items-center gap-3 py-10">
+              <hlm-spinner />
+              <p class="text-muted-foreground">Loading workspace data…</p>
+            </div>
+          </section>
+        }
+      </section>
+    </div>
+  </div>
+</main>
+
+<hlm-toaster position="bottom-right" />
