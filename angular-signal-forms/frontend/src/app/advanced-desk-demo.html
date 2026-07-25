@@ -1,0 +1,85 @@
+<section class="demo-band">
+  <h2>Advanced Chalet Desk</h2>
+
+  @if (showDeskErrors() && deskForm().errorSummary().length) {
+  <div class="summary" role="alert">
+    <strong>Validation errors</strong>
+    <ul>
+      @for (error of deskForm().errorSummary(); track $index) {
+      <li>{{ error.message || error.kind }}</li>
+      }
+    </ul>
+    <button class="secondary" type="button" (click)="focusFirstDeskError()">
+      Focus first problem
+    </button>
+  </div>
+  }
+
+  <form class="permit" [formRoot]="deskForm">
+    <fieldset>
+      <legend>Schema</legend>
+      <div class="grid two">
+        <label>
+          Lead first name
+          <input [formField]="deskForm.lead.firstName" />
+          <app-errors [field]="deskForm.lead.firstName"></app-errors>
+        </label>
+        <label>
+          Lead last name
+          <input [formField]="deskForm.lead.lastName" />
+          <app-errors [field]="deskForm.lead.lastName"></app-errors>
+        </label>
+        <label class="span">
+          Pass code
+          <input [formField]="deskForm.swissPass" />
+          <app-errors [field]="deskForm.swissPass"></app-errors>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Custom controls</legend>
+      <div class="grid two">
+        <div class="field-label">
+          <span>Souvenir budget</span>
+          <app-chf-input [formField]="deskForm.souvenirBudget"></app-chf-input>
+          <app-errors [field]="deskForm.souvenirBudget"></app-errors>
+        </div>
+        <div class="field-label">
+          <span>Summit desk rating</span>
+          <app-summit-rating
+            [formField]="deskForm.satisfaction"
+          ></app-summit-rating>
+          <app-errors [field]="deskForm.satisfaction"></app-errors>
+        </div>
+        <div class="field-label">
+          <span>Cowbell insurance</span>
+          <app-cowbell-toggle
+            [formField]="deskForm.cowbellInsurance"
+          ></app-cowbell-toggle>
+          <app-errors [field]="deskForm.cowbellInsurance"></app-errors>
+        </div>
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" [disabled]="deskForm().submitting()">
+        Submit with FormRoot
+      </button>
+      <button class="secondary" type="button" (click)="resetDesk()">
+        Reset advanced desk
+      </button>
+    </div>
+  </form>
+
+  <div class="state-grid">
+    <article>
+      <h3>Advanced form model</h3>
+      <pre>{{ deskModel() | json }}</pre>
+    </article>
+    <article>
+      <h3>FormRoot result</h3>
+      <pre>{{ deskSubmitted() || "No valid submission yet" | json }}</pre>
+    </article>
+  </div>
+</section>

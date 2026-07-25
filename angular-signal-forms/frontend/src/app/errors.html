@@ -1,0 +1,7 @@
+@if (field().touched() && field().invalid()) {
+<ul class="errors">
+  @for (error of field().errors(); track $index) {
+  <li>{{ error.message || error.kind }}</li>
+  }
+</ul>
+}

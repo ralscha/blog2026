@@ -1,0 +1,69 @@
+<section class="demo-band">
+  <h2>Model and Input Bindings</h2>
+
+  <form class="grid two" novalidate>
+    <label>
+      Guest name
+      <input [formField]="guestbookForm.name" />
+    </label>
+    <label>
+      Email
+      <input type="email" [formField]="guestbookForm.email" />
+      <app-errors [field]="guestbookForm.email"></app-errors>
+    </label>
+    <label>
+      Canton
+      <select [formField]="guestbookForm.canton">
+        @for (canton of cantons; track canton) {
+        <option [value]="canton">{{ canton }}</option>
+        }
+      </select>
+    </label>
+    <label>
+      Yodel volume
+      <input type="number" [formField]="guestbookForm.yodelVolume" />
+    </label>
+    <label>
+      Visit date
+      <input type="date" [formField]="guestbookForm.visitDate" />
+      <app-errors [field]="guestbookForm.visitDate"></app-errors>
+    </label>
+    <label>
+      Alarm time
+      <input type="time" [formField]="guestbookForm.alarmTime" />
+    </label>
+    <label class="check">
+      <input type="checkbox" [formField]="guestbookForm.fondueReady" />
+      Fondue-ready
+    </label>
+    <label class="span">
+      Postcard
+      <textarea [formField]="guestbookForm.postcard"></textarea>
+    </label>
+  </form>
+
+  <div class="actions">
+    <button type="button" (click)="loadCelebrityGuest()">Load demo data</button>
+    <button
+      class="secondary"
+      type="button"
+      (click)="guestbookForm.name().value.set('Alpine Console Logger')"
+    >
+      Set name from code
+    </button>
+  </div>
+
+  <div class="state-grid">
+    <article>
+      <h3>Whole model signal</h3>
+      <pre>{{ guestbookModel() | json }}</pre>
+    </article>
+    <article>
+      <h3>Email field state</h3>
+      <p>Value: {{ guestbookForm.email().value() || "empty" }}</p>
+      <p>Valid: {{ guestbookForm.email().valid() }}</p>
+      <p>Touched: {{ guestbookForm.email().touched() }}</p>
+      <p>Dirty: {{ guestbookForm.email().dirty() }}</p>
+    </article>
+  </div>
+</section>

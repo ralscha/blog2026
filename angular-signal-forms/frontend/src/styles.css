@@ -1,0 +1,91 @@
+:root {
+  color-scheme: light;
+  --ink: #222;
+  --muted: #555;
+  --paper: #fff;
+  --panel: #fff;
+  --line: #d0d0d0;
+  --soft: #f4f4f4;
+  --bad: #b00020;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.4;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 1px solid #222;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  background: #222;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  background: #333;
+  border-color: #333;
+}
+
+button.secondary {
+  color: var(--ink);
+  background: #fff;
+  border-color: var(--line);
+}
+
+button.secondary:hover:not(:disabled) {
+  background: var(--soft);
+  border-color: #bbb;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  padding: 0.5rem 0.6rem;
+  color: var(--ink);
+  background: var(--panel);
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 2px;
+}
+
+textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}

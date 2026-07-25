@@ -1,0 +1,77 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  all:
+    desc: Run all finite checks and builds
+    cmds:
+      - task frontend:lint
+      - task frontend:test
+      - task frontend:build
+      - task backend:test
+      - task backend:build
+
+  install:
+    desc: Install frontend dependencies
+    dir: frontend
+    cmds:
+      - npm install
+
+  dev:
+    desc: Run frontend and backend dev servers
+    deps:
+      - frontend:start
+      - backend:run
+
+  frontend:start:
+    desc: Start the Angular dev server
+    dir: frontend
+    cmds:
+      - npm run start
+
+  frontend:build:
+    desc: Build the Angular app
+    dir: frontend
+    cmds:
+      - npm run build
+
+  frontend:lint:
+    desc: Lint the Angular app
+    dir: frontend
+    cmds:
+      - npm run lint
+
+  frontend:test:
+    desc: Test the Angular app
+    dir: frontend
+    cmds:
+      - npm test
+
+  frontend:format:
+    desc: Format frontend files
+    dir: frontend
+    cmds:
+      - npm run format
+
+  backend:run:
+    desc: Run the Go backend
+    dir: backend
+    cmds:
+      - go run .
+
+  backend:build:
+    desc: Build the Go backend
+    dir: backend
+    cmds:
+      - go build ./...
+
+  backend:test:
+    desc: Test the Go backend
+    dir: backend
+    cmds:
+      - go test ./...

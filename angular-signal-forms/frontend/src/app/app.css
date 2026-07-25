@@ -1,0 +1,180 @@
+.shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: 1.5rem;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+}
+
+h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.demo-band {
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+label,
+.field-label {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.span {
+  grid-column: 1 / -1;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.pill {
+  color: var(--muted);
+  padding: 0.4rem 0;
+}
+
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+article,
+fieldset {
+  border: 1px solid var(--line);
+  padding: 0.75rem;
+  margin: 0;
+}
+
+pre {
+  overflow: auto;
+  margin: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  background: #fafafa;
+  white-space: pre-wrap;
+}
+
+.items {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem auto;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.title-field {
+  margin-bottom: 0.75rem;
+}
+
+.permit {
+  display: grid;
+  gap: 0.75rem;
+}
+
+legend {
+  padding: 0 0.25rem;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.summary {
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--line);
+  padding: 0.75rem;
+  background: #fafafa;
+}
+
+.summary ul {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.money-control {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  border: 1px solid var(--line);
+}
+
+.money-control span {
+  padding: 0.5rem;
+  border-right: 1px solid var(--line);
+}
+
+.money-control input {
+  border: 0;
+}
+
+.rating-control {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.rating-control button,
+.toggle {
+  min-width: 2.5rem;
+}
+
+.rating-control .active,
+.toggle.active {
+  color: #fff;
+  background: #222;
+  border-color: #222;
+}
+
+.errors {
+  margin: 0.25rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--bad);
+}
+
+input:where(.ng-invalid.ng-touched),
+textarea:where(.ng-invalid.ng-touched),
+select:where(.ng-invalid.ng-touched) {
+  border-color: var(--bad);
+}
+
+@media (max-width: 760px) {
+  .two,
+  .state-grid,
+  .item-row {
+    grid-template-columns: 1fr;
+  }
+}

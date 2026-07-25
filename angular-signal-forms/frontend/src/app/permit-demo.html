@@ -1,0 +1,164 @@
+<section class="demo-band">
+  <h2>Complete Alpine Permit</h2>
+
+  <form class="permit" novalidate (submit)="submitPermit($event)">
+    <fieldset>
+      <legend>Applicant</legend>
+      <div class="grid two">
+        <label>
+          First name
+          <input [formField]="permitForm.profile.firstName" />
+          <app-errors [field]="permitForm.profile.firstName"></app-errors>
+        </label>
+        <label>
+          Last name
+          <input [formField]="permitForm.profile.lastName" />
+          <app-errors [field]="permitForm.profile.lastName"></app-errors>
+        </label>
+        <label>
+          Username
+          <input [formField]="permitForm.profile.username" />
+          @if (permitForm.profile.username().pending()) {
+          <span class="hint">Checking the registry...</span>
+          }
+          <app-errors [field]="permitForm.profile.username"></app-errors>
+        </label>
+        <label>
+          Email
+          <input type="email" [formField]="permitForm.profile.email" />
+          <app-errors [field]="permitForm.profile.email"></app-errors>
+        </label>
+        <label>
+          Password
+          <input type="password" [formField]="permitForm.profile.password" />
+          <span class="hint">Strength: {{ passwordStrength() }}</span>
+          <app-errors [field]="permitForm.profile.password"></app-errors>
+        </label>
+        <label>
+          Confirm password
+          <input
+            type="password"
+            [formField]="permitForm.profile.confirmPassword"
+          />
+          <app-errors [field]="permitForm.profile.confirmPassword"></app-errors>
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Trip</legend>
+      <div class="grid two">
+        <label>
+          Canton
+          <select [formField]="permitForm.trip.canton">
+            @for (canton of cantons; track canton) {
+            <option [value]="canton">{{ canton }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Mountain
+          <select [formField]="permitForm.trip.mountain">
+            @for (mountain of mountains; track mountain) {
+            <option [value]="mountain">{{ mountain }}</option>
+            }
+          </select>
+          <app-errors [field]="permitForm.trip.mountain"></app-errors>
+        </label>
+        <label>
+          Altitude
+          <input type="number" [formField]="permitForm.trip.altitude" />
+          <app-errors [field]="permitForm.trip.altitude"></app-errors>
+        </label>
+        <label>
+          Start date
+          <input type="date" [formField]="permitForm.trip.startDate" />
+        </label>
+        <label>
+          Delivery
+          <select [formField]="permitForm.trip.delivery">
+            <option value="pickup">Pick up</option>
+            <option value="sled">Sled</option>
+            <option value="cable-car">Cable car</option>
+          </select>
+        </label>
+        <label>
+          Permit ID
+          <input [formField]="permitForm.trip.permitId" />
+        </label>
+        <label class="check">
+          <input type="checkbox" [formField]="permitForm.trip.needsGuide" />
+          Needs guide
+        </label>
+        <label>
+          Coupon code
+          <input [formField]="permitForm.trip.couponCode" />
+          @if (permitForm.trip.couponCode().disabled()) { @for ( reason of
+          permitForm.trip.couponCode().disabledReasons(); track reason ) {
+          <span class="hint">{{ reason.message }}</span>
+          } } @if (permitForm.trip.couponCode().pending()) {
+          <span class="hint">Checking the coupon registry...</span>
+          }
+          <app-errors [field]="permitForm.trip.couponCode"></app-errors>
+        </label>
+        @if (!permitForm.trip.guideNote().hidden()) {
+        <label class="span">
+          Guide note
+          <textarea [formField]="permitForm.trip.guideNote"></textarea>
+          <app-errors [field]="permitForm.trip.guideNote"></app-errors>
+        </label>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Safety</legend>
+      <div class="grid two">
+        <label>
+          Emergency phone
+          <input
+            [formField]="permitForm.safety.emergencyPhone"
+            placeholder="+41 44 123 45 67"
+          />
+          <app-errors [field]="permitForm.safety.emergencyPhone"></app-errors>
+        </label>
+        <label class="check">
+          <input
+            type="checkbox"
+            [formField]="permitForm.safety.acceptedRules"
+          />
+          I accept the safety rules.
+        </label>
+      </div>
+      <app-errors [field]="permitForm.safety.acceptedRules"></app-errors>
+    </fieldset>
+
+    <div class="actions">
+      <button
+        type="submit"
+        [disabled]="permitForm().pending() || permitForm().submitting()"
+      >
+        Submit permit
+      </button>
+      <button class="secondary" type="button" (click)="resetPermit()">
+        Reset state
+      </button>
+      <span class="pill">Draft saved: {{ draftSavedAt() }}</span>
+    </div>
+  </form>
+
+  <div class="state-grid">
+    <article>
+      <h3>Root state</h3>
+      <p>Valid: {{ permitForm().valid() }}</p>
+      <p>Invalid: {{ permitForm().invalid() }}</p>
+      <p>Pending: {{ permitForm().pending() }}</p>
+      <p>Touched: {{ permitForm().touched() }}</p>
+      <p>Dirty: {{ permitForm().dirty() }}</p>
+    </article>
+    <article>
+      <h3>Submitted payload</h3>
+      <pre>{{ submitted() || permitModel() | json }}</pre>
+    </article>
+  </div>
+</section>

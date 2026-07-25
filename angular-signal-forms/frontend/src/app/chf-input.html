@@ -1,0 +1,12 @@
+<div class="money-control">
+  <span>CHF</span>
+  <input
+    #inputElement
+    aria-label="Souvenir budget in Swiss francs"
+    [value]="displayValue()"
+    [disabled]="disabled()"
+    [class.is-invalid]="invalid() && touched()"
+    (input)="displayValue.set($any($event.target).value)"
+    (blur)="updateModel(); touch.emit()"
+  />
+</div>

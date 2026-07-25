@@ -1,0 +1,63 @@
+<section class="demo-band">
+  <h2>Reactive Forms Compatibility</h2>
+
+  <h3>compatForm()</h3>
+  <form class="grid two" novalidate>
+    <label>
+      Signal Forms field
+      <input [formField]="compatTree.applicant" />
+      <app-errors [field]="compatTree.applicant"></app-errors>
+    </label>
+    <label>
+      Existing FormControl
+      <input [formField]="compatTree.reference" />
+      @if ( compatTree.reference().touched() && compatTree.reference().invalid()
+      ) {
+      <ul class="errors">
+        <li>Enter a legacy reference.</li>
+      </ul>
+      }
+    </label>
+  </form>
+
+  <div class="state-grid">
+    <article>
+      <h3>Extracted raw value</h3>
+      <pre>{{ compatValue() | json }}</pre>
+    </article>
+    <article>
+      <h3>Dirty and enabled fields</h3>
+      @if (dirtyCompatValue(); as value) {
+      <pre>{{ value | json }}</pre>
+      } @else {
+      <p>Edit either field to populate this filtered value.</p>
+      }
+    </article>
+  </div>
+
+  <h3>SignalFormControl</h3>
+  <form class="grid two" [formGroup]="bridgeGroup">
+    <label>
+      SignalFormControl field
+      <input [formField]="bridgeNameControl.fieldTree" />
+      <app-errors [field]="bridgeNameControl.fieldTree"></app-errors>
+    </label>
+    <label>
+      Plain reactive field
+      <input formControlName="platform" />
+    </label>
+  </form>
+
+  <div class="state-grid">
+    <article>
+      <h3>Reactive value</h3>
+      <pre>{{ bridgeGroup.getRawValue() | json }}</pre>
+    </article>
+    <article>
+      <h3>Signal field state</h3>
+      <p>Valid: {{ bridgeNameControl.fieldTree().valid() }}</p>
+      <p>Dirty: {{ bridgeNameControl.fieldTree().dirty() }}</p>
+      <p>Touched: {{ bridgeNameControl.fieldTree().touched() }}</p>
+    </article>
+  </div>
+</section>

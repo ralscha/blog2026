@@ -1,0 +1,13 @@
+<button
+  #toggleButton
+  class="secondary toggle"
+  type="button"
+  aria-label="Cowbell insurance"
+  [class.active]="checked()"
+  [disabled]="disabled()"
+  [attr.aria-pressed]="checked()"
+  (click)="checked.set(!checked())"
+  (blur)="touch.emit()"
+>
+  {{ checked() ? "Covered" : "Uncovered" }}
+</button>

@@ -1,0 +1,36 @@
+<section class="demo-band">
+  <h2>Dynamic Arrays with applyEach()</h2>
+
+  <label class="title-field">
+    Picnic title
+    <input [formField]="picnicForm.title" />
+  </label>
+
+  <div class="items">
+    @for (item of picnicForm.items; track item; let i = $index) {
+    <div class="item-row">
+      <label>
+        Item
+        <input [formField]="item.name" />
+      </label>
+      <label>
+        Qty
+        <input type="number" [formField]="item.quantity" />
+      </label>
+      <button class="secondary" type="button" (click)="removePicnicItem(i)">
+        Remove
+      </button>
+    </div>
+    <app-errors [field]="item.name"></app-errors>
+    <app-errors [field]="item.quantity"></app-errors>
+    }
+  </div>
+  <app-errors [field]="picnicForm.items"></app-errors>
+
+  <div class="actions">
+    <button type="button" (click)="addPicnicItem()">Add item</button>
+    <span class="pill">
+      Total things packed: {{ picnicTotal() | number: "1.0-0" }}
+    </span>
+  </div>
+</section>

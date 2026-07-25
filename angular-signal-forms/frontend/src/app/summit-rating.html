@@ -1,0 +1,22 @@
+<div
+  class="rating-control"
+  role="group"
+  aria-label="Summit desk rating"
+  [class.is-invalid]="invalid() && touched()"
+  (focusout)="onFocusOut($event)"
+>
+  @for (score of scores; track score) {
+  <button
+    #ratingButton
+    class="secondary"
+    type="button"
+    [class.active]="value() >= score"
+    [disabled]="disabled()"
+    [attr.aria-label]="'Rate ' + score + ' out of 5'"
+    [attr.aria-pressed]="value() === score"
+    (click)="value.set(score)"
+  >
+    {{ score }}
+  </button>
+  }
+</div>
