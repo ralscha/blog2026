@@ -1,0 +1,14 @@
+[project]
+name = "tabpfn-demos"
+version = "0.1.0"
+description = "Small sklearn dataset examples comparing Prior Labs TabPFN with XGBoost"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "tabpfn==8.2.0",
+    "xgboost",
+]
+

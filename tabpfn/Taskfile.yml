@@ -1,0 +1,52 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List available demo tasks
+    cmds:
+      - task --list
+
+  iris:
+    desc: Run the Iris classification demo
+    cmds:
+      - uv run python iris_tabpfn_vs_xgboost.py --show-predictions 5
+
+  breast-cancer:
+    desc: Run the breast cancer classification demo
+    cmds:
+      - uv run python breast_cancer_tabpfn_vs_xgboost.py --show-predictions 5
+
+  diabetes:
+    desc: Run the diabetes regression demo
+    cmds:
+      - uv run python diabetes_tabpfn_vs_xgboost.py --show-predictions 5
+
+  all:
+    desc: Run all demos sequentially with TabPFN and XGBoost
+    cmds:
+      - task: iris
+      - task: breast-cancer
+      - task: diabetes
+
+  iris-fast:
+    desc: Run the Iris XGBoost-only baseline
+    cmds:
+      - uv run python iris_tabpfn_vs_xgboost.py --skip-tabpfn --show-predictions 3
+
+  breast-cancer-fast:
+    desc: Run the breast cancer XGBoost-only baseline
+    cmds:
+      - uv run python breast_cancer_tabpfn_vs_xgboost.py --skip-tabpfn --show-predictions 3
+
+  diabetes-fast:
+    desc: Run the diabetes XGBoost-only baseline
+    cmds:
+      - uv run python diabetes_tabpfn_vs_xgboost.py --skip-tabpfn --show-predictions 3
+
+  all-fast:
+    desc: Run all XGBoost-only demo baselines
+    deps:
+      - iris-fast
+      - breast-cancer-fast
+      - diabetes-fast
+
