@@ -11,6 +11,11 @@ tasks:
     cmds:
       - uv sync
 
+  checkpoint:
+    desc: Download the TimesFM 3.0 checkpoint from Hugging Face
+    cmds:
+      - uv run python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='google/timesfm-3.0-pytorch', local_dir='checkpoints/timesfm-3.0-pytorch')"
+
   demo:synthetic:
     desc: Run the synthetic event-shock demo
     cmds:

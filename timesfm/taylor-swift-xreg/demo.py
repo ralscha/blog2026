@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from timesfm_demo import (
     ensure_output_dir,
+    forecast_series,
     load_model,
     quantile_frame,
     save_forecast_plot,
@@ -35,30 +36,23 @@ def build_series_and_covariate() -> tuple[np.ndarray, np.ndarray]:
 
 def main() -> None:
     history, event_active = build_series_and_covariate()
-    model = load_model(
-        max_context=512,
-        max_horizon=HORIZON,
-        return_backcast=True,
-    )
-    point_forecasts, quantile_forecasts = model.forecast_with_covariates(
-        inputs=[history],
-        dynamic_numerical_covariates={"event_active": [event_active]},
-        xreg_mode="xreg + timesfm",
-        ridge=0.01,
-        force_on_cpu=True,
+    model = load_model()
+    point_forecast, quantile_forecast = forecast_series(
+        model,
+        history,
+        horizon=HORIZON,
+        past_future_covariates=event_active,
     )
 
-    point_forecast = np.asarray(point_forecasts[0])
-    quantile_forecast = np.asarray(quantile_forecasts[0])
     output_dir = ensure_output_dir("taylor-swift-xreg")
     plot_path = save_forecast_plot(
         output_dir=output_dir,
         history=history,
         forecast=point_forecast,
         quantiles=quantile_forecast,
-        title="Synthetic event shock forecast with an XReg covariate",
+        title="Synthetic event shock forecast with a TimesFM 3.0 covariate",
         history_label="Hourly demand history",
-        forecast_label="48-hour XReg forecast",
+        forecast_label="48-hour covariate forecast",
     )
 
     quantiles = quantile_frame(quantile_forecast)

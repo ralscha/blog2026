@@ -5,33 +5,45 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import timesfm
+from timesfm3 import ModelConfig, TimesFM3Evaluator
 
 
 ROOT = Path(__file__).resolve().parent
+LOCAL_CHECKPOINT = ROOT / "checkpoints" / "timesfm-3.0-pytorch"
+REMOTE_CHECKPOINT = "google/timesfm-3.0-pytorch"
 
 
-def load_model(
-    max_context: int,
-    max_horizon: int,
-    *,
-    return_backcast: bool = False,
-) -> timesfm.TimesFM_2p5_200M_torch:
-    model = timesfm.TimesFM_2p5_200M_torch.from_pretrained(
-        "google/timesfm-2.5-200m-pytorch"
+def load_model() -> TimesFM3Evaluator:
+    checkpoint = (
+        str(LOCAL_CHECKPOINT)
+        if (LOCAL_CHECKPOINT / "model.safetensors").is_file()
+        else REMOTE_CHECKPOINT
     )
-    model.compile(
-        timesfm.ForecastConfig(
-            max_context=max_context,
-            max_horizon=max_horizon,
-            normalize_inputs=True,
-            use_continuous_quantile_head=True,
-            force_flip_invariance=True,
-            fix_quantile_crossing=True,
-            return_backcast=return_backcast,
+    return TimesFM3Evaluator(
+        ModelConfig(
+            checkpoint_path=checkpoint,
+            per_core_batch_size=4,
         )
     )
-    return model
+
+
+def forecast_series(
+    model: TimesFM3Evaluator,
+    history: np.ndarray,
+    horizon: int,
+    *,
+    past_future_covariates: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    output = model.predict(
+        context=history,
+        horizon=horizon,
+        past_future_covariates=past_future_covariates,
+        return_quantiles=True,
+        use_symmetric_averaging=True,
+    )
+    if output.forecast is None or output.quantiles is None:
+        raise RuntimeError("TimesFM 3.0 did not return the requested forecasts")
+    return output.forecast, output.quantiles
 
 
 def ensure_output_dir(name: str) -> Path:
@@ -57,9 +69,9 @@ def save_forecast_plot(
     plt.plot(history_x, history, label=history_label, linewidth=2)
     plt.plot(forecast_x, forecast, label=forecast_label, linestyle="--", linewidth=2)
 
-    if quantiles is not None and quantiles.shape[-1] >= 10:
-        lower_band = quantiles[:, 1]
-        upper_band = quantiles[:, 9]
+    if quantiles is not None and quantiles.shape[-1] >= 9:
+        lower_band = quantiles[:, 0]
+        upper_band = quantiles[:, 8]
         plt.fill_between(
             forecast_x,
             lower_band,
@@ -81,7 +93,6 @@ def save_forecast_plot(
 
 def quantile_frame(quantiles: np.ndarray) -> pd.DataFrame:
     columns = [
-        "mean",
         "p10",
         "p20",
         "p30",
@@ -92,4 +103,9 @@ def quantile_frame(quantiles: np.ndarray) -> pd.DataFrame:
         "p80",
         "p90",
     ]
-    return pd.DataFrame(quantiles, columns=columns[: quantiles.shape[1]])
+    if quantiles.ndim != 2 or quantiles.shape[1] != len(columns):
+        raise ValueError(
+            "Expected TimesFM 3.0 quantiles with shape (horizon, 9), "
+            f"got {quantiles.shape}"
+        )
+    return pd.DataFrame(quantiles, columns=columns)

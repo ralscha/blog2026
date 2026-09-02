@@ -13,7 +13,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from timesfm_demo import ensure_output_dir, load_model, quantile_frame
+from timesfm_demo import ensure_output_dir, forecast_series, load_model, quantile_frame
 
 
 DEFAULT_CSV_PATH = Path(__file__).resolve().parent / "train.csv"
@@ -80,7 +80,7 @@ def load_weekly_sales(csv_path: Path) -> pd.Series:
 
 def save_decomposition_plot(series: pd.Series, output_dir: Path) -> Path:
     analysis = seasonal_decompose(
-        series, model="additive", period=52, extrapolate_trend="freq"
+        series, model="additive", period=52, extrapolate_trend="period"
     )
     figure = analysis.plot()
     figure.set_size_inches(12, 9)
@@ -114,16 +114,16 @@ def save_forecast_plot(
         linewidth=2,
     )
 
-    if quantiles.shape[-1] >= 10:
+    if quantiles.shape[-1] >= 9:
         plt.fill_between(
             forecast_dates,
-            quantiles[:, 1],
-            quantiles[:, 9],
+            quantiles[:, 0],
+            quantiles[:, 8],
             alpha=0.2,
             label="10%-90% band",
         )
 
-    plt.title("Walmart weekly sales forecast with TimesFM 2.5")
+    plt.title("Walmart weekly sales forecast with TimesFM 3.0")
     plt.xlabel("Date")
     plt.ylabel("Total weekly sales")
     plt.legend()
@@ -143,9 +143,9 @@ def main() -> None:
     decomposition_path = save_decomposition_plot(weekly_sales, output_dir)
 
     history = weekly_sales.to_numpy(dtype="float32")
-    model = load_model(max_context=len(history), max_horizon=args.horizon)
-    point_forecast, quantile_forecast = model.forecast(
-        horizon=args.horizon, inputs=[history]
+    model = load_model()
+    point_forecast, quantile_forecast = forecast_series(
+        model, history, horizon=args.horizon
     )
 
     last_date = weekly_sales.index[-1]
@@ -159,13 +159,13 @@ def main() -> None:
         history_dates=weekly_sales.index,
         history_values=history,
         forecast_dates=forecast_dates,
-        forecast_values=point_forecast[0],
-        quantiles=quantile_forecast[0],
+        forecast_values=point_forecast,
+        quantiles=quantile_forecast,
         horizon=args.horizon,
         output_dir=output_dir,
     )
 
-    quantiles = quantile_frame(quantile_forecast[0])
+    quantiles = quantile_frame(quantile_forecast)
     quantiles.insert(0, "date", forecast_dates.strftime("%Y-%m-%d"))
     quantiles.to_csv(output_dir / "forecast_quantiles.csv", index=False)
 

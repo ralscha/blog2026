@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from timesfm_demo import (
     ensure_output_dir,
+    forecast_series,
     load_model,
     quantile_frame,
     save_forecast_plot,
@@ -39,21 +40,23 @@ def main() -> None:
     load = load_energy_series()
 
     history = load[-24 * 28 :]
-    model = load_model(max_context=len(history), max_horizon=24 * 7)
-    point_forecast, quantile_forecast = model.forecast(horizon=24 * 7, inputs=[history])
+    model = load_model()
+    point_forecast, quantile_forecast = forecast_series(
+        model, history, horizon=24 * 7
+    )
 
     output_dir = ensure_output_dir("energy-pulse")
     plot_path = save_forecast_plot(
         output_dir=output_dir,
         history=history[-24 * 7 :],
-        forecast=point_forecast[0],
-        quantiles=quantile_forecast[0],
-        title="German electricity load forecast with TimesFM 2.5",
+        forecast=point_forecast,
+        quantiles=quantile_forecast,
+        title="German electricity load forecast with TimesFM 3.0",
         history_label="Last 7 days of load",
         forecast_label="Next 7 days forecast",
     )
 
-    quantiles = quantile_frame(quantile_forecast[0])
+    quantiles = quantile_frame(quantile_forecast)
     quantiles.insert(0, "hour", range(1, len(quantiles) + 1))
     quantiles.to_csv(output_dir / "forecast_quantiles.csv", index=False)
 

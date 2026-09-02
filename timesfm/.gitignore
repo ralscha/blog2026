@@ -1,0 +1,8 @@
+checkpoints/
+.matplotlib-cache/
+__pycache__/
+*/__pycache__/
+*/forecast.png
+*/forecast_quantiles.csv
+walmart-sales/decomposition.png
+walmart-sales/train.csv
