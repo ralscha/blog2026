@@ -1,0 +1,7 @@
+/.project
+.idea
+target
+node_modules
+bun.lock
+package-lock.json
+*.exe
