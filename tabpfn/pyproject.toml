@@ -8,7 +8,7 @@ dependencies = [
     "numpy",
     "pandas",
     "scikit-learn",
-    "tabpfn==8.2.0",
+    "tabpfn==9.2.0",
     "xgboost",
 ]
 
