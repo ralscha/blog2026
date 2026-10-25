@@ -9,7 +9,7 @@ dependencies = [
     "numpy>=2.2.0",
     "pandas>=2.2.0",
     "statsmodels>=0.14.4",
-    "timesfm[torch]==3.0.1",
+    "timesfm[torch]==3.0.2",
     "yfinance>=0.2.60",
 ]
 
