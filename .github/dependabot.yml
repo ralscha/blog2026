@@ -1,0 +1,89 @@
+# Weekly version updates; security updates are enabled in repository settings.
+# Minor and patch releases are grouped; major releases remain separate.
+version: 2
+updates:
+- package-ecosystem: docker-compose
+  directory: /gofr
+  schedule:
+    interval: weekly
+    day: monday
+    time: "09:00"
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 5
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+- package-ecosystem: gomod
+  directories:
+  - /angular-signal-forms/backend
+  - /gofr
+  - /spartan/backend
+  schedule:
+    interval: weekly
+    day: monday
+    time: "09:00"
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 5
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+- package-ecosystem: npm
+  directories:
+  - /angular-signal-forms/frontend
+  - /spartan/frontend
+  schedule:
+    interval: weekly
+    day: monday
+    time: "09:00"
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 5
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+- package-ecosystem: pip
+  directory: /tabpfn
+  schedule:
+    interval: weekly
+    day: monday
+    time: "09:00"
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 5
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
+- package-ecosystem: uv
+  directory: /timesfm
+  schedule:
+    interval: weekly
+    day: monday
+    time: "09:00"
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 5
+  groups:
+    minor-and-patch:
+      applies-to: version-updates
+      patterns:
+      - '*'
+      update-types:
+      - minor
+      - patch
