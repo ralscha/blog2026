@@ -6,7 +6,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/lib/pq v1.12.3
 	github.com/stretchr/testify v1.12.1
-	gofr.dev v1.62.0
+	gofr.dev v1.63.1
 )
 
 require (
